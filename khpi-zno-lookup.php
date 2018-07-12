@@ -2,12 +2,12 @@
 
 /*
 Plugin Name: KhPI ZNO Lookup
-Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
-Description: A brief description of the Plugin.
+Plugin URI: http://kpi.kharkov.ua
+Description: NTU KhPI ZNO Lookup plugin
 Version: 1.0
 Author: Oleksii Vodka
-Author URI: http://URI_Of_The_Plugin_Author
-License: A "Slug" license name e.g. GPL2
+Author URI: http://web.kpi.kharkov.ua/dpm/uk/vodka-oleksij-oleksandrovich/
+License: GPL2
 */
 
 define('KHPI_ZNO_LOOKUP_ADMIN_SUFFIX', 'znolookup');
@@ -28,9 +28,12 @@ function khpi_zno_lookup_install()
 {
     global $wpdb;
     global $khpi_zno_lookup_db_version;
+    
 
     $table_name = $wpdb->prefix . "khpi_zno_lookup";
-    if ($wpdb->get_var("show tables like '$table_name'") != $table_name) {
+//    $wpdb->query("drop table if exists {$table_name} ");
+    if ($wpdb->get_var("show tables like '$table_name'") != $table_name) 
+{
 
         $sql = "
         CREATE TABLE `{$table_name}` (
@@ -51,9 +54,9 @@ function khpi_zno_lookup_install()
           `PK` double(5,2) NOT NULL DEFAULT '0',
           `TK` double(5,2) NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`)
-        ) ;
+        ) {$wpdb -> get_charset_collate()} ;
      ";
-
+	
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
 
@@ -261,7 +264,7 @@ function khpi_zno_lookup_load_content()
         $fname = $parts['dirname'].DIRECTORY_SEPARATOR.uniqid();
         $fname = str_replace("\\","\\\\" , $fname);
         move_uploaded_file($tmp, $fname);
-        
+/*        
         $q = "
             LOAD DATA INFILE '$fname' REPLACE INTO TABLE ".KHPI_ZNO_LOOKUP_TABLENAME."
             CHARACTER SET cp1251
@@ -271,6 +274,28 @@ function khpi_zno_lookup_load_content()
         ";
 
         $wpdb->query($q);
+*/
+	
+
+	$row = 0;
+	$rowname = array();
+	if (($handle = fopen($fname, "r")) !== FALSE) {
+	    while (($data = fgetcsv($handle,1000,";","'"))!==FALSE) {
+		$row++; 
+        	if ($row == 1) {$rowname=$data;continue;}
+		$insdata = array();
+		
+		foreach ($data as $k=>$v)
+		{
+		    $insdata[$rowname[$k]]=mb_convert_encoding($v, "UTF-8", "windows-1251");;
+		}
+
+		$wpdb->insert( KHPI_ZNO_LOOKUP_TABLENAME,$insdata);
+             
+             } 
+    	}
+
+
         $wpdb->show_errors(true);
 
         unlink($fname);
