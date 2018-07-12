@@ -28,12 +28,11 @@ function khpi_zno_lookup_install()
 {
     global $wpdb;
     global $khpi_zno_lookup_db_version;
-    
+
 
     $table_name = $wpdb->prefix . "khpi_zno_lookup";
 //    $wpdb->query("drop table if exists {$table_name} ");
-    if ($wpdb->get_var("show tables like '$table_name'") != $table_name) 
-{
+    if ($wpdb->get_var("show tables like '$table_name'") != $table_name) {
 
         $sql = "
         CREATE TABLE `{$table_name}` (
@@ -56,7 +55,7 @@ function khpi_zno_lookup_install()
         PRIMARY KEY (`id`)
         ) {$wpdb -> get_charset_collate()} ;
      ";
-	
+
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
 
@@ -87,7 +86,7 @@ function khpi_zno_lookup_showlist()
 {
     global $wpdb;
     $zno_objs = $wpdb->get_results("SELECT *  FROM " . KHPI_ZNO_LOOKUP_TABLENAME, OBJECT);
-    $addlink = admin_url('admin.php?page=' . KHPI_ZNO_LOOKUP_ADMIN_SUFFIX.'&addnew=1');
+    $addlink = admin_url('admin.php?page=' . KHPI_ZNO_LOOKUP_ADMIN_SUFFIX . '&addnew=1');
     echo "
         <h1>KhPI ZNO Lookup Plugin</h1>
         <h2>Спеціальності/Спеціалізації та конкурсні предмети для вступу  <a href='{$addlink}'' class='button'>Створити нову</a></h2>
@@ -237,7 +236,7 @@ function khpi_zno_lookup_load_content()
         wp_redirect(admin_url('admin.php?page=' . KHPI_ZNO_LOOKUP_ADMIN_SUFFIX));
 
     } elseif (isset($_REQUEST['delid'])) {
-        $wpdb->delete( KHPI_ZNO_LOOKUP_TABLENAME, array( 'ID' => (int)$_REQUEST['delid'] ), array( '%d' ));
+        $wpdb->delete(KHPI_ZNO_LOOKUP_TABLENAME, array('ID' => (int)$_REQUEST['delid']), array('%d'));
         wp_redirect(admin_url('admin.php?page=' . KHPI_ZNO_LOOKUP_ADMIN_SUFFIX));
         wp_die();
     } elseif (isset($_REQUEST['addnew'])) {
@@ -257,52 +256,52 @@ function khpi_zno_lookup_load_content()
         wp_redirect(admin_url('admin.php?page=' . KHPI_ZNO_LOOKUP_ADMIN_SUFFIX . "&id=" . $wpdb->insert_id));
         wp_die();
     } elseif (isset($_FILES['upload_csv'])) {
-        if ($_FILES['upload_csv']['error'] != 0 )
+        if ($_FILES['upload_csv']['error'] != 0)
             wp_die("Cann't upload file");
         $tmp = $_FILES['upload_csv']['tmp_name'];
         $parts = pathinfo($tmp);
-        $fname = $parts['dirname'].DIRECTORY_SEPARATOR.uniqid();
-        $fname = str_replace("\\","\\\\" , $fname);
+        $fname = $parts['dirname'] . DIRECTORY_SEPARATOR . uniqid();
+        $fname = str_replace("\\", "\\\\", $fname);
         move_uploaded_file($tmp, $fname);
-/*        
-        $q = "
-            LOAD DATA INFILE '$fname' REPLACE INTO TABLE ".KHPI_ZNO_LOOKUP_TABLENAME."
-            CHARACTER SET cp1251
-            FIELDS TERMINATED BY ';' ENCLOSED BY '\"'
-            LINES TERMINATED BY '\r\n'
-            IGNORE 1 LINES;
-        ";
+        /*
+                $q = "
+                    LOAD DATA INFILE '$fname' REPLACE INTO TABLE ".KHPI_ZNO_LOOKUP_TABLENAME."
+                    CHARACTER SET cp1251
+                    FIELDS TERMINATED BY ';' ENCLOSED BY '\"'
+                    LINES TERMINATED BY '\r\n'
+                    IGNORE 1 LINES;
+                ";
 
-        $wpdb->query($q);
-*/
-	
+                $wpdb->query($q);
+        */
 
-	$row = 0;
-	$rowname = array();
-	if (($handle = fopen($fname, "r")) !== FALSE) {
-	    while (($data = fgetcsv($handle,1000,";","'"))!==FALSE) {
-		$row++; 
-        	if ($row == 1) {$rowname=$data;continue;}
-		$insdata = array();
-		
-		foreach ($data as $k=>$v)
-		{
-		    $insdata[$rowname[$k]]=mb_convert_encoding($v, "UTF-8", "windows-1251");;
-		}
 
-		$wpdb->insert( KHPI_ZNO_LOOKUP_TABLENAME,$insdata);
-             
-             } 
-    	}
+        $row = 0;
+        $rowname = array();
+        if (($handle = fopen($fname, "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, ";", "'")) !== FALSE) {
+                $row++;
+                if ($row == 1) {
+                    $rowname = $data;
+                    continue;
+                }
+                $insdata = array();
+
+                foreach ($data as $k => $v) {
+                    $insdata[$rowname[$k]] = mb_convert_encoding($v, "UTF-8", "windows-1251");;
+                }
+
+                $wpdb->insert(KHPI_ZNO_LOOKUP_TABLENAME, $insdata);
+
+            }
+        }
 
 
         $wpdb->show_errors(true);
 
         unlink($fname);
-        wp_redirect(admin_url('admin.php?page=' . KHPI_ZNO_LOOKUP_ADMIN_SUFFIX ));
-    }
-
-    else {
+        wp_redirect(admin_url('admin.php?page=' . KHPI_ZNO_LOOKUP_ADMIN_SUFFIX));
+    } else {
         khpi_zno_lookup_showlist();
     }
 
@@ -337,7 +336,7 @@ function load_admin_style()
 }
 
 
-wp_enqueue_script('my-ajax-request', plugins_url('khpi_zno_lookup_script.js', __FILE__), null, 1, true);
+wp_enqueue_script('my-ajax-request', plugins_url('khpi_zno_lookup_script.js', __FILE__), null, 1.01, true);
 wp_localize_script('my-ajax-request', 'MyAjax', array('ajaxurl' => admin_url('admin-ajax.php')));
 
 

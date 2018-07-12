@@ -88,7 +88,7 @@ function init_khpi_zno_lookup() {
                 plotSpec(data);
             };
             var f1 = function () {
-                zno_list_values[$(this)[0].id] = parseFloat($(this).val());
+                zno_list_values[$(this)[0].id] = parseFloat($(this).val().replace(',', '.'));
 
                 if (zno_list_values[$(this)[0].id] < 100 || zno_list_values[$(this)[0].id] > 200) {
                     $(this).css('background-color', '#feb0b0');
@@ -102,7 +102,7 @@ function init_khpi_zno_lookup() {
 
 
             var f2 = function () {
-                zno_list_values[$(this)[0].id] = parseFloat($(this).val());
+                zno_list_values[$(this)[0].id] = parseFloat($(this).val().replace(',', '.'));
 
                 if (zno_list_values[$(this)[0].id] < 1.0 || zno_list_values[$(this)[0].id] > 12.0) {
                     $(this).css('background-color', '#feb0b0');
