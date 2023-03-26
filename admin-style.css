@@ -24,7 +24,13 @@
 }
 [class*="zno_col-"] {
     padding: 10px;
+    box-sizing: border-box;
     width: 100%;
+}
+
+#spec h2
+{
+    margin-top: 0px;
 }
 
 @media all and ( min-width: 600px ) {
