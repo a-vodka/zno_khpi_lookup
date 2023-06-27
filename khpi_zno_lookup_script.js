@@ -58,11 +58,11 @@ function init_khpi_zno_lookup() {
             var elem1 = null;
             if (zno === 'UkrainianLanguage') {
                 elem = $("<input type='checkbox' checked disabled value='" + zno + "'/><label>" + zno_list[zno] + "</label>").appendTo("#chkbox");
-                elem1 = $("<input type='text' size='5' id = '" + zno + "' style='width:100%;'/><br/>").appendTo("#chkbox");
+                elem1 = $("<input type='text' size='5' id = '" + zno + "' style='width:100%;' placeholder='200'/><br/>").appendTo("#chkbox");
             }
             else {
                 elem = $("<input type='checkbox' id='chk_" + zno + "' value='" + zno + "' /><label for='chk_" + zno + "'>" + zno_list[zno] + "</label>").appendTo("#chkbox");
-                elem1 = $("<input type='text' size='5' id='" + zno + "' disabled style='width:100%;'/><br/>").appendTo("#chkbox");
+                elem1 = $("<input type='text' size='5' id='" + zno + "' disabled style='width:100%;' placeholder='200'/><br/>").appendTo("#chkbox");
             }
             var f = function () {
                 zno_list_chk[$(this).val()] = $(this).prop("checked");
@@ -121,7 +121,7 @@ function init_khpi_zno_lookup() {
         //elem = $("<input type='checkbox' id='chk_certificate' value='Certificate'/><label for='chk_certificate'>Бал атестату за 12-ти бальною шкалою</label>").appendTo("#chkbox");
         //elem1 = $("<input type='text' size='5' id='certificate' disabled style='width:100%;'/><br/>").appendTo("#chkbox");
 
-        $("<input type='checkbox' id='chk_rk' value='rk' checked disabled/><label for='chk_rk'>Регіональний коефіцієнт (1,00)</label><div style='font-size:0.75em;line-height:0.9;font-style: italic;'>(Значення буде визначено в червні 2023&nbsp;р.)</div>").appendTo("#chkbox");
+        $("<input type='checkbox' id='chk_rk' value='rk' checked disabled/><label for='chk_rk'>Регіональний коефіцієнт (1,07)</label><br/>").appendTo("#chkbox");
 //        $("<input type='checkbox' id='chk_sk' value='sk'/><label for='chk_sk'>Сільський коефіцієнт (1,02)</label><br/>").appendTo("#chkbox").change(f1);
         $("<input type='checkbox' id='chk_sec' value='sec'/><label for='chk_sec'>Галузевий коефіцієнт* (1,02) </label><br/>").appendTo("#chkbox").change(f1);
 
@@ -178,7 +178,7 @@ function init_khpi_zno_lookup() {
             }
 
 
-            // data[spec].mark *= 1.02;
+            data[spec].mark *= 1.07;
             data[spec].mark *= $('#chk_sk').prop('checked') ? 1.02 : 1.0;
 
             if ($('#chk_sec').prop('checked') && high_spec_code.indexOf(data[spec].Code) >= 0)
